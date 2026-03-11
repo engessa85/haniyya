@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
   },
   star: {
     position: 'absolute',
-    bottom: -60,
-    left: -40,
+    bottom: -10,
+    left: -10,
     width: width * 0.5,
     height: width * 0.5,
   },
