@@ -20,6 +20,15 @@ export default function WelcomeScreen() {
         resizeMode="contain"
       />
 
+      {/* Top Section - Book */}
+      <View style={styles.topSection}>
+        <Image
+          source={require('@/assets/images/book.png')}
+          style={styles.bookImage}
+          resizeMode="contain"
+        />
+      </View>
+
       {/* Middle — Fox + Welcome */}
       <View style={styles.welcomeRow}>
         <Image
