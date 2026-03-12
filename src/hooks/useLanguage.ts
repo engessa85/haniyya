@@ -15,6 +15,9 @@ const translations = {
         forgotPassword: 'Forgot Password?',
         noAccount: 'Didn\'t have an account?',
         signUp: 'Sign Up',
+        email: 'Email',
+        confirmPassword: 'Confirm Password',
+        alreadyHaveAccount: 'Already have an account?',
     },
     ar: {
         welcome: 'أهلاً',
@@ -28,6 +31,9 @@ const translations = {
         forgotPassword: 'نسيت كلمة المرور؟',
         noAccount: 'ليس لديك حساب؟',
         signUp: 'إنشاء حساب',
+        email: 'البريد الإلكتروني',
+        confirmPassword: 'تأكيد كلمة المرور',
+        alreadyHaveAccount: 'لديك حساب بالفعل؟',
     },
 };
 

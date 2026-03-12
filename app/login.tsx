@@ -121,7 +121,7 @@ export default function LoginScreen() {
                 {/* Footer */}
                 <View style={styles.footerRow}>
                     <Text style={styles.footerText}>{t.noAccount} </Text>
-                    <TouchableOpacity onPress={() => { }}>
+                    <TouchableOpacity onPress={() => router.push('/signup')}>
                         <Text style={styles.signUpText}>{t.signUp}</Text>
                     </TouchableOpacity>
                 </View>
