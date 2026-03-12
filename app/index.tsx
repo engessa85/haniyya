@@ -15,10 +15,17 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <StatusBar style="dark" />
 
-      {/* Top Right — Rainbow */}
+      {/* Top Decoration — Rainbow (Source changes in Arabic) */}
       <Image
-        source={require('@/assets/images/rainbow_to_right_side.png')}
-        style={[styles.rainbow, { right: -width * 0.2, width: width * 0.6, height: width * 0.6 }]}
+        source={isRTL ? require('@/assets/images/rainbow_to_left_side.png') : require('@/assets/images/rainbow_to_right_side.png')}
+        style={[
+          styles.rainbow,
+          {
+            width: width * 0.6,
+            height: width * 0.6,
+            ...(isRTL ? { left: -width * 0.15 } : { right: -width * 0.2 })
+          }
+        ]}
         resizeMode="contain"
       />
 
@@ -32,13 +39,13 @@ export default function WelcomeScreen() {
       </View>
 
       {/* Middle — Fox + Welcome */}
-      <View style={styles.welcomeRow}>
+      <View style={[styles.welcomeRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <Image
           source={require('@/assets/images/fox.png')}
           style={styles.foxImage}
           resizeMode="contain"
         />
-        <Text style={styles.welcomeText}>WELCOME</Text>
+        <Text style={styles.welcomeText}>{t.welcome.toUpperCase()}</Text>
       </View>
 
       {/* Enter Button */}
@@ -47,7 +54,7 @@ export default function WelcomeScreen() {
         onPress={() => router.push('/login')}
         activeOpacity={0.7}
       >
-        <Text style={styles.enterText}>ENTER</Text>
+        <Text style={styles.enterText}>{t.enter.toUpperCase()}</Text>
       </TouchableOpacity>
 
       {/* Language Switcher */}
@@ -73,10 +80,17 @@ export default function WelcomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Bottom Left — Star */}
+      {/* Bottom Decoration — Star (Stays on left per user request) */}
       <Image
         source={require('@/assets/images/star.png')}
-        style={[styles.star, { left: -width * 0.05, width: width * 0.5, height: width * 0.5 }]}
+        style={[
+          styles.star,
+          {
+            width: width * 0.5,
+            height: width * 0.5,
+            left: -width * 0.05
+          }
+        ]}
         resizeMode="contain"
       />
 
