@@ -1,13 +1,15 @@
 import { useLanguage } from '@/src/hooks/useLanguage';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+// Removed static Dimensions call to use dynamic useWindowDimensions instead
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const { language, toggleLanguage, t, isRTL } = useLanguage();
+  const { width, height } = useWindowDimensions();
+
 
   return (
     <View style={styles.container}>
@@ -15,8 +17,8 @@ export default function WelcomeScreen() {
 
       {/* Top Right — Rainbow */}
       <Image
-        source={require('@/assets/images/rainbow.png')}
-        style={styles.rainbow}
+        source={require('@/assets/images/rainbow_to_right_side.png')}
+        style={[styles.rainbow, { right: -width * 0.2, width: width * 0.6, height: width * 0.6 }]}
         resizeMode="contain"
       />
 
@@ -24,7 +26,7 @@ export default function WelcomeScreen() {
       <View style={styles.topSection}>
         <Image
           source={require('@/assets/images/book.png')}
-          style={styles.bookImage}
+          style={[styles.bookImage, { width: width * 0.7, height: width * 0.5 }]}
           resizeMode="contain"
         />
       </View>
@@ -74,7 +76,7 @@ export default function WelcomeScreen() {
       {/* Bottom Left — Star */}
       <Image
         source={require('@/assets/images/star.png')}
-        style={styles.star}
+        style={[styles.star, { left: -width * 0.05, width: width * 0.5, height: width * 0.5 }]}
         resizeMode="contain"
       />
 
@@ -93,17 +95,11 @@ const styles = StyleSheet.create({
   // Decorations
   rainbow: {
     position: 'absolute',
-    top: -10,
-    right: -60,
-    width: width * 0.6,
-    height: width * 0.6,
+    top: -1,
   },
   star: {
     position: 'absolute',
-    bottom: -10,
-    left: -10,
-    width: width * 0.5,
-    height: width * 0.5,
+    bottom: -5,
   },
 
   // Top section
@@ -119,8 +115,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   bookImage: {
-    width: width * 0.7,
-    height: width * 0.5,
+    // Width and height moved to dynamic styles
   },
 
   // Welcome row
