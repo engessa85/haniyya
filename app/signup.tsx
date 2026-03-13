@@ -1,5 +1,6 @@
 import { useLanguage } from '@/src/hooks/useLanguage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Href, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ import {
     useWindowDimensions,
     View
 } from 'react-native';
+import { auth } from '../src/config/firebase';
 
 export default function SignUpScreen() {
     const router = useRouter();
@@ -30,6 +32,8 @@ export default function SignUpScreen() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -154,13 +158,46 @@ export default function SignUpScreen() {
                             </View>
                         </View>
 
+                        {error && <Text style={styles.errorText}>{error}</Text>}
+
                         {/* Sign Up Button */}
                         <TouchableOpacity
-                            style={styles.signUpButton}
-                            onPress={() => { }}
+                            style={[styles.signUpButton, loading && { opacity: 0.7 }]}
+                            onPress={async () => {
+                                if (!email || !password || !username) {
+                                    setError("Please fill all fields");
+                                    return;
+                                }
+                                if (password !== confirmPassword) {
+                                    setError("Passwords do not match");
+                                    return;
+                                }
+
+                                setLoading(true);
+                                setError(null);
+                                try {
+                                    await createUserWithEmailAndPassword(auth, email, password);
+                                } catch (e: any) {
+                                    console.error(e);
+                                    if (e.code === 'auth/email-already-in-use') {
+                                        setError("This email is already in use");
+                                    } else if (e.code === 'auth/invalid-email') {
+                                        setError("Please enter a valid email address");
+                                    } else if (e.code === 'auth/weak-password') {
+                                        setError("Password is too weak");
+                                    } else {
+                                        setError("An error occurred during sign up");
+                                    }
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }}
                             activeOpacity={0.8}
+                            disabled={loading}
                         >
-                            <Text style={styles.signUpButtonText}>{t.signUp}</Text>
+                            <Text style={styles.signUpButtonText}>
+                                {loading ? "Creating Account..." : t.signUp}
+                            </Text>
                         </TouchableOpacity>
 
                         {/* Footer */}
@@ -300,6 +337,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#E2725B',
         textDecorationLine: 'underline',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        textAlign: 'center',
+        marginBottom: 10,
     },
     star: {
         position: 'absolute',

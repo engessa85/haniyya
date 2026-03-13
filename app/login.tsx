@@ -1,5 +1,6 @@
 import { useLanguage } from '@/src/hooks/useLanguage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { signInWithEmailAndPassword } from '@firebase/auth';
 import { Href, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
@@ -13,16 +14,19 @@ import {
     useWindowDimensions,
     View
 } from 'react-native';
+import { auth } from '../src/config/firebase';
 
 export default function LoginScreen() {
     const router = useRouter();
     const { t, isRTL } = useLanguage();
     const { width, height } = useWindowDimensions();
 
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(''); // Used as Email for now
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -73,7 +77,7 @@ export default function LoginScreen() {
             <View style={styles.formContainer}>
                 {/* Username */}
                 <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { textAlign: isRTL ? 'right' : 'left' }]}>{t.username}</Text>
+                    <Text style={[styles.label, { textAlign: isRTL ? 'right' : 'left' }]}>{t.email}</Text>
                     <TextInput
                         style={styles.input}
                         value={username}
@@ -109,13 +113,38 @@ export default function LoginScreen() {
                     </TouchableOpacity>
                 </View>
 
+                {error && <Text style={styles.errorText}>{error}</Text>}
+
                 {/* Sign In Button */}
                 <TouchableOpacity
-                    style={styles.signInButton}
-                    onPress={() => { }}
+                    style={[styles.signInButton, loading && { opacity: 0.7 }]}
+                    onPress={async () => {
+                        if (!username || !password) {
+                            setError("Please enter your email and password");
+                            return;
+                        }
+                        setLoading(true);
+                        setError(null);
+                        try {
+                            // Using username field as email as per UI
+                            await signInWithEmailAndPassword(auth, username, password);
+                        } catch (e: any) {
+                            console.error(e);
+                            if (e.code === 'auth/invalid-email') {
+                                setError("Please enter a valid email address");
+                            } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+                                setError("Invalid email or password");
+                            } else {
+                                setError("An error occurred during sign in");
+                            }
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}
                     activeOpacity={0.8}
+                    disabled={loading}
                 >
-                    <Text style={styles.signInText}>{t.signIn}</Text>
+                    <Text style={styles.signInText}>{loading ? "Signing in..." : t.signIn}</Text>
                 </TouchableOpacity>
 
                 {/* Footer */}
@@ -262,6 +291,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#E2725B',
         textDecorationLine: 'underline',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        textAlign: 'center',
+        marginBottom: 10,
     },
     fox: {
         position: 'absolute',
