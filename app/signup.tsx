@@ -1,6 +1,6 @@
 import { useLanguage } from '@/src/hooks/useLanguage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
@@ -166,7 +166,7 @@ export default function SignUpScreen() {
                         {/* Footer */}
                         <View style={styles.footerRow}>
                             <Text style={styles.footerText}>{t.alreadyHaveAccount} </Text>
-                            <TouchableOpacity onPress={() => router.push('/login')}>
+                            <TouchableOpacity onPress={() => router.push('/login' as Href)}>
                                 <Text style={styles.loginLink}>{t.login}</Text>
                             </TouchableOpacity>
                         </View>

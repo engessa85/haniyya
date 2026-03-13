@@ -1,5 +1,5 @@
 import { useLanguage } from '@/src/hooks/useLanguage';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
@@ -51,7 +51,7 @@ export default function WelcomeScreen() {
       {/* Enter Button */}
       <TouchableOpacity
         style={styles.enterButton}
-        onPress={() => router.push('/login')}
+        onPress={() => router.push('/login' as Href)}
         activeOpacity={0.7}
       >
         <Text style={styles.enterText}>{t.enter.toUpperCase()}</Text>
