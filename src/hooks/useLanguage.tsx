@@ -18,6 +18,8 @@ const translations = {
         email: 'Email',
         confirmPassword: 'Confirm Password',
         alreadyHaveAccount: 'Already have an account?',
+        vitalRecord: 'Vital record',
+        teddyInformation: 'Teddy information',
     },
     ar: {
         welcome: 'أهلاً',
@@ -34,6 +36,8 @@ const translations = {
         email: 'البريد الإلكتروني',
         confirmPassword: 'تأكيد كلمة المرور',
         alreadyHaveAccount: 'لديك حساب بالفعل؟',
+        vitalRecord: 'السجل الحيوي',
+        teddyInformation: 'معلومات تيدي',
     },
 };
 

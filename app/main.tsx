@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../src/context/AuthContext';
 
 export default function MainPage() {
-    const { signOut } = useAuth();
+    const { signOut, user } = useAuth();
     const router = useRouter();
     const { t, isRTL } = useLanguage();
     const { width } = useWindowDimensions();
@@ -48,20 +48,38 @@ export default function MainPage() {
 
             {/* Main Content */}
             <View style={styles.content}>
-                <View style={[styles.imageContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-                    <Image
-                        source={require('@/assets/images/vital.png')}
-                        style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
-                        resizeMode="contain"
-                    />
-                    <Image
-                        source={require('@/assets/images/teddy.png')}
-                        style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
-                        resizeMode="contain"
-                    />
+                <View style={[styles.headerRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    <Text style={styles.title}>{t.welcome}</Text>
+                    {user?.email && (
+                        <Text style={styles.usernameText}>, {user.email.split('@')[0]}</Text>
+                    )}
                 </View>
 
-                <Text style={styles.title}>{t.welcome}</Text>
+                <View style={styles.sectionsWrapper}>
+                    {/* Vital Section */}
+                    <View style={styles.sectionContainer}>
+                        <Text style={styles.sectionTitle}>{t.vitalRecord}</Text>
+                        <View style={styles.imageBox}>
+                            <Image
+                                source={require('@/assets/images/vital.png')}
+                                style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </View>
+
+                    {/* Teddy Section */}
+                    <View style={styles.sectionContainer}>
+                        <Text style={styles.sectionTitle}>{t.teddyInformation}</Text>
+                        <View style={styles.imageBox}>
+                            <Image
+                                source={require('@/assets/images/teddy.png')}
+                                style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </View>
+                </View>
 
                 <TouchableOpacity
                     style={styles.signOutButton}
@@ -70,6 +88,21 @@ export default function MainPage() {
                     <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Bottom Decoration — Fox (Right / Left based on RTL) */}
+            <Image
+                source={require('@/assets/images/fox.png')}
+                style={[
+                    styles.foxImage,
+                    {
+                        width: 100,
+                        height: 120,
+                        bottom: 20,
+                        ...(isRTL ? { left: 20 } : { right: 20 })
+                    }
+                ]}
+                resizeMode="contain"
+            />
 
             {/* Bottom Decoration — Star */}
             <Image
@@ -95,41 +128,73 @@ const styles = StyleSheet.create({
     },
     rainbow: {
         position: 'absolute',
-        top: -10, // Adjusted for SafeAreaView
+        top: -10,
     },
     content: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingTop: 60,
         zIndex: 1,
     },
-    imageContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 20,
-        marginBottom: 40,
-    },
-    mainImage: {
-        // Dynamic width/height
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        marginBottom: 30,
     },
     title: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#8B5A2B',
-        marginBottom: 20,
+    },
+    usernameText: {
+        fontSize: 20,
+        color: '#A0522D',
+        fontWeight: '500',
+    },
+    sectionsWrapper: {
+        width: '100%',
+        alignItems: 'center',
+        gap: 25,
+        marginBottom: 30,
+    },
+    sectionContainer: {
+        alignItems: 'center',
+        width: '100%',
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#A0522D',
+        marginBottom: 8,
+    },
+    imageBox: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 20,
+        padding: 5,
+        borderWidth: 1,
+        borderColor: '#DEB887',
+    },
+    mainImage: {
+        // Dynamic
     },
     signOutButton: {
         marginTop: 20,
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 30,
         borderRadius: 15,
         borderWidth: 1.5,
         borderColor: '#000',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
     },
     signOutText: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#A0522D',
         fontWeight: '600',
+    },
+    foxImage: {
+        position: 'absolute',
+        bottom: 80,
+        zIndex: 2,
     },
     star: {
         position: 'absolute',
