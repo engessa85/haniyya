@@ -1,30 +1,67 @@
+import { useLanguage } from '@/src/hooks/useLanguage';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../src/context/AuthContext';
 
 export default function MainPage() {
+    const { signOut } = useAuth();
     const router = useRouter();
-    const { user, signOut } = useAuth();
+    const { t, isRTL } = useLanguage();
+    const { width } = useWindowDimensions();
 
     const handleSignOut = async () => {
-        await signOut();
-        // Navigation will be handled by the RootLayout listener
+        try {
+            await signOut();
+            // AuthContext will handle redirection
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="dark" />
 
-            <View style={styles.content}>
-                <Text style={styles.title}>Main Page</Text>
-                <Text style={styles.subtitle}>Welcome, {user?.email}</Text>
+            {/* Top Decoration — Rainbow */}
+            <Image
+                source={isRTL ? require('@/assets/images/rainbow_to_left_side.png') : require('@/assets/images/rainbow_to_right_side.png')}
+                style={[
+                    styles.rainbow,
+                    {
+                        width: width * 0.6,
+                        height: width * 0.6,
+                        ...(isRTL ? { left: -width * 0.15 } : { right: -width * 0.2 })
+                    }
+                ]}
+                resizeMode="contain"
+            />
 
-                <View style={styles.placeholder}>
-                    <Text style={styles.placeholderText}>Design coming soon...</Text>
+            {/* Main Content */}
+            <View style={styles.content}>
+                <View style={[styles.imageContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    <Image
+                        source={require('@/assets/images/vital.png')}
+                        style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
+                        resizeMode="contain"
+                    />
+                    <Image
+                        source={require('@/assets/images/teddy.png')}
+                        style={[styles.mainImage, { width: width * 0.4, height: width * 0.4 }]}
+                        resizeMode="contain"
+                    />
                 </View>
+
+                <Text style={styles.title}>{t.welcome}</Text>
 
                 <TouchableOpacity
                     style={styles.signOutButton}
@@ -33,6 +70,20 @@ export default function MainPage() {
                     <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Bottom Decoration — Star */}
+            <Image
+                source={require('@/assets/images/star.png')}
+                style={[
+                    styles.star,
+                    {
+                        width: width * 0.5,
+                        height: width * 0.5,
+                        left: -width * 0.05
+                    }
+                ]}
+                resizeMode="contain"
+            />
         </SafeAreaView>
     );
 }
@@ -40,49 +91,48 @@ export default function MainPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FDF5E6',
+        backgroundColor: '#FDF5E6', // Match cream background
+    },
+    rainbow: {
+        position: 'absolute',
+        top: -10, // Adjusted for SafeAreaView
     },
     content: {
         flex: 1,
-        padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 1,
+    },
+    imageContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 20,
+        marginBottom: 40,
+    },
+    mainImage: {
+        // Dynamic width/height
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#000',
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 40,
-    },
-    placeholder: {
-        width: '100%',
-        height: 200,
-        borderWidth: 2,
-        borderColor: '#CCC',
-        borderStyle: 'dashed',
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 40,
-    },
-    placeholderText: {
-        color: '#AAA',
-        fontSize: 18,
+        color: '#8B5A2B',
+        marginBottom: 20,
     },
     signOutButton: {
-        backgroundColor: '#E2725B',
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 25,
+        marginTop: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 15,
+        borderWidth: 1.5,
+        borderColor: '#000',
     },
     signOutText: {
-        color: '#FFF',
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 18,
+        color: '#A0522D',
+        fontWeight: '600',
+    },
+    star: {
+        position: 'absolute',
+        bottom: -10,
     },
 });
