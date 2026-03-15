@@ -56,6 +56,8 @@ export default function StoryLibraryScreen() {
                 onNavigate={(screen) => {
                     if (screen === 'home') {
                         router.push('/main');
+                    } else if (screen === 'activity-report') {
+                        router.push('/activity-report');
                     }
                     setIsSidebarOpen(false);
                 }}
