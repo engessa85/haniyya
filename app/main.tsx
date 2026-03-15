@@ -44,6 +44,8 @@ export default function MainPage() {
                         router.push('/story-library');
                     } else if (screen === 'activity-report') {
                         router.push('/activity-report');
+                    } else if (screen === 'notification') {
+                        router.push('/notification');
                     } else if (screen === 'home') {
                         setIsSidebarOpen(false);
                     } else {

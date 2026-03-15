@@ -58,6 +58,8 @@ export default function ActivityReportScreen() {
                         router.push('/main');
                     } else if (screen === 'story-library') {
                         router.push('/story-library');
+                    } else if (screen === 'notification') {
+                        router.push('/notification');
                     }
                     setIsSidebarOpen(false);
                 }}

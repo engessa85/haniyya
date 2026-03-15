@@ -16,19 +16,32 @@ import { useAuth } from '../src/context/AuthContext';
 import Sidebar from '@/src/components/Sidebar';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function StoryLibraryScreen() {
+export default function NotificationScreen() {
     const { signOut } = useAuth();
     const router = useRouter();
     const { t, isRTL } = useLanguage();
-    const { width, height } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const categories = [
-        { id: 'kuwaiti', title: 'Kuwaiti Tales' },
-        { id: 'arabic', title: 'Arabic' },
-        { id: 'international', title: 'International' },
-        { id: 'short', title: 'Short Story' },
-        { id: 'create', title: 'Create your story' },
+    const notifications = [
+        {
+            id: '1',
+            title: 'Baby',
+            message: 'inside the Haniyyah Smart Tent',
+            time: 'Today at 01.52 PM',
+        },
+        {
+            id: '2',
+            title: 'Baby',
+            message: 'just start the story',
+            time: 'Today at 1.45 PM',
+        },
+        {
+            id: '3',
+            title: 'Story',
+            message: 'has upload to the teddy successful',
+            time: 'Today at 1.23 PM',
+        },
     ];
 
     const handleSignOut = async () => {
@@ -39,11 +52,20 @@ export default function StoryLibraryScreen() {
         }
     };
 
-    const CategoryCard = ({ title }: { title: string }) => (
-        <TouchableOpacity style={styles.card}>
-            <View style={styles.iconCircle} />
-            <Text style={styles.cardText}>{title}</Text>
-        </TouchableOpacity>
+    const NotificationItem = ({ title, message, time }: { title: string, message: string, time: string }) => (
+        <View style={styles.notificationItem}>
+            <View style={styles.iconContainer}>
+                <View style={styles.iconCircle}>
+                    <Ionicons name="person" size={24} color="#FFF" />
+                </View>
+            </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.messageText}>
+                    <Text style={styles.boldText}>{title}</Text> {message}
+                </Text>
+                <Text style={styles.timeText}>{time}</Text>
+            </View>
+        </View>
     );
 
     return (
@@ -56,17 +78,17 @@ export default function StoryLibraryScreen() {
                 onNavigate={(screen) => {
                     if (screen === 'home') {
                         router.push('/main');
+                    } else if (screen === 'story-library') {
+                        router.push('/story-library');
                     } else if (screen === 'activity-report') {
                         router.push('/activity-report');
-                    } else if (screen === 'notification') {
-                        router.push('/notification');
                     }
                     setIsSidebarOpen(false);
                 }}
                 onSignOut={handleSignOut}
             />
 
-            {/* Top Decoration — Rainbow (Inverted/Flipped for variety or as per image) */}
+            {/* Top Decoration — Rainbow */}
             <Image
                 source={isRTL ? require('@/assets/images/rainbow_to_right_side.png') : require('@/assets/images/rainbow_to_left_side.png')}
                 style={[
@@ -89,14 +111,27 @@ export default function StoryLibraryScreen() {
                     <Ionicons name="menu-outline" size={32} color="#000" />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>STORY LIBRARY</Text>
+                <Text style={styles.headerTitle}>NOTIFICATION</Text>
+
+                <View style={styles.unReadRow}>
+                    <Text style={styles.unReadText}>Un Read (3)</Text>
+                    <TouchableOpacity>
+                        <Ionicons name="ellipsis-horizontal" size={24} color="#000" />
+                    </TouchableOpacity>
+                </View>
 
                 <ScrollView 
+                    style={styles.list}
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
                 >
-                    {categories.map((cat) => (
-                        <CategoryCard key={cat.id} title={cat.title} />
+                    {notifications.map((notif) => (
+                        <NotificationItem 
+                            key={notif.id} 
+                            title={notif.title} 
+                            message={notif.message} 
+                            time={notif.time} 
+                        />
                     ))}
                 </ScrollView>
             </View>
@@ -145,7 +180,6 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        alignItems: 'center',
         paddingTop: 60,
         zIndex: 1,
     },
@@ -157,47 +191,63 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 32,
         fontWeight: 'normal',
-        fontFamily: 'System', // Use a friendly font if available, fallback to System
         color: '#000',
+        alignSelf: 'center',
         marginTop: 20,
         marginBottom: 30,
-        letterSpacing: 1,
+    },
+    unReadRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 30,
+        marginBottom: 20,
+    },
+    unReadText: {
+        fontSize: 20,
+        fontWeight: '500',
+        color: '#000',
+    },
+    list: {
+        flex: 1,
     },
     scrollContent: {
         paddingHorizontal: 30,
-        paddingBottom: 100, // Space for fox/star
-        width: '100%',
-        alignItems: 'center',
+        paddingBottom: 150,
     },
-    card: {
-        backgroundColor: '#EAEAEA',
-        width: '100%',
-        maxWidth: 320,
-        height: 70,
-        borderRadius: 12,
+    notificationItem: {
         flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        marginBottom: 20,
-        // Elevation/Shadow
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
+        marginBottom: 30,
+        alignItems: 'flex-start',
+    },
+    iconContainer: {
+        marginRight: 15,
     },
     iconCircle: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#A06060', // Dusty rose/maroon
-        marginRight: 20,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#A06060', // Dusty rose
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    cardText: {
-        fontSize: 20,
+    textContainer: {
+        flex: 1,
+        paddingTop: 5,
+    },
+    messageText: {
+        fontSize: 18,
+        color: '#333',
+        lineHeight: 24,
+    },
+    boldText: {
         fontWeight: 'bold',
-        color: '#A06060',
-        textDecorationLine: 'underline',
+        color: '#000',
+    },
+    timeText: {
+        fontSize: 14,
+        color: '#888',
+        marginTop: 5,
     },
     foxImage: {
         position: 'absolute',

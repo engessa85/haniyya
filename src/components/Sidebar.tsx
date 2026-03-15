@@ -86,7 +86,7 @@ export default function Sidebar({ isOpen, onClose, onNavigate, onSignOut }: Side
 
                         <TouchableOpacity 
                             style={styles.navItem} 
-                            onPress={() => onNavigate('notifications')}
+                            onPress={() => onNavigate('notification')}
                         >
                             <Ionicons name="notifications" size={24} color="#000" />
                             <Text style={styles.navText}>Notification</Text>
