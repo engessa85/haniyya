@@ -12,12 +12,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../src/context/AuthContext';
+import Sidebar from '@/src/components/Sidebar';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 
 export default function MainPage() {
     const { signOut, user } = useAuth();
     const router = useRouter();
     const { t, isRTL } = useLanguage();
     const { width } = useWindowDimensions();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleSignOut = async () => {
         try {
@@ -31,6 +35,16 @@ export default function MainPage() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="dark" />
+
+            <Sidebar 
+                isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)} 
+                onNavigate={(screen) => {
+                    console.log('Navigating to:', screen);
+                    setIsSidebarOpen(false);
+                }}
+                onSignOut={handleSignOut}
+            />
 
             {/* Top Decoration — Rainbow */}
             <Image
@@ -48,6 +62,13 @@ export default function MainPage() {
 
             {/* Main Content */}
             <View style={styles.content}>
+                <TouchableOpacity 
+                    style={[styles.hamburgerButton, { [isRTL ? 'right' : 'left']: 20 }]} 
+                    onPress={() => setIsSidebarOpen(true)}
+                >
+                    <Ionicons name="menu-outline" size={32} color="#000" />
+                </TouchableOpacity>
+
                 <View style={[styles.headerRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                     <Text style={styles.title}>{t.welcome}</Text>
                     {user?.email && (
@@ -199,5 +220,10 @@ const styles = StyleSheet.create({
     star: {
         position: 'absolute',
         bottom: -10,
+    },
+    hamburgerButton: {
+        position: 'absolute',
+        top: 20,
+        zIndex: 5,
     },
 });
