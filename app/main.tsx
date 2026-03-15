@@ -40,7 +40,13 @@ export default function MainPage() {
                 isOpen={isSidebarOpen} 
                 onClose={() => setIsSidebarOpen(false)} 
                 onNavigate={(screen) => {
-                    console.log('Navigating to:', screen);
+                    if (screen === 'story-library') {
+                        router.push('/story-library');
+                    } else if (screen === 'home') {
+                        setIsSidebarOpen(false);
+                    } else {
+                        console.log('Navigating to:', screen);
+                    }
                     setIsSidebarOpen(false);
                 }}
                 onSignOut={handleSignOut}
